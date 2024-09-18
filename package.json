@@ -1,0 +1,19 @@
+{
+  "name": "atpbb",
+  "version": "1.0.0",
+  "author": "",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "dev": "NODE_ENV=development pnpm --recursive --parallel --stream dev"
+  },
+  "packageManager": "pnpm@8.15.9",
+  "workspaces": {
+    "packages": [
+      "client",
+      "server",
+      "common/*"
+    ]
+  }
+}

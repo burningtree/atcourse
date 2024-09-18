@@ -1,0 +1,11 @@
+- id: 1
+  topicId: 1
+  text: 'test reply'
+  authorDid: did:plc:oio4hkxaop4ao4wz2pp3f4cr
+  createdAt: 2024-09-18T15:00
+
+- id: 2
+  topicId: 1
+  text: 'test reply 2'
+  authorDid: did:plc:524tuhdhh3m7li5gycdn6boe
+  createdAt: 2024-09-18T16:00

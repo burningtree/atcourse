@@ -1,0 +1,26 @@
+{
+  "name": "@atpbb/server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@atproto/api": "^0.13.7",
+    "@atproto/oauth-client-node": "^0.1.1",
+    "@mikro-orm/core": "^6.3.10",
+    "@mikro-orm/sqlite": "^6.3.10",
+    "@paralleldrive/cuid2": "^2.2.2",
+    "hyper-express": "^6.16.4",
+    "js-yaml": "^4.1.0",
+    "marked": "^14.1.2"
+  },
+  "devDependencies": {
+    "@mikro-orm/cli": "^6.3.10",
+    "@mikro-orm/reflection": "^6.3.10"
+  }
+}

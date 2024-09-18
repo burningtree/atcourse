@@ -1,0 +1,16 @@
+{
+    "categories": [
+        {
+            "id": "layer2",
+            "color": "rgb(234 179 8)",
+            "title": "Layer 2",
+            "description": "Topics that do not fit into Plasma and State Channel"
+        },
+        {
+            "id": "sharding",
+            "color": "rgb(34 197 94)",
+            "title": "Sharding",
+            "description": "Discussion about sharding"
+        }
+    ]
+}

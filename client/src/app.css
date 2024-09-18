@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.baseTable th {
+    @apply font-normal text-left px-2 py-2.5 text-gray-500;
+}
+
+.baseTable th.center {
+    @apply text-center;
+}
+
+.baseTable th.right {
+    @apply text-right;
+}
+
+.baseTable td {
+    @apply px-2 py-3;
+}
+
+.baseTable tr {
+    @apply border-b border-gray-300;
+}
+
+.baseTable thead {
+    @apply border-b-4 border-gray-200;
+}
+
+input.input {
+    @apply border p-2 py-1.5;
+}
+
+button.button {
+    @apply border p-2 py-1.5 bg-blue-500 text-white;
+}
