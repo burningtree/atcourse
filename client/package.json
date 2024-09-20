@@ -1,5 +1,5 @@
 {
-	"name": "@atpbb/client",
+	"name": "@atcourse/client",
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
@@ -7,7 +7,8 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"prod": "PORT=5173 node build/index.js"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
@@ -26,6 +27,7 @@
 	"type": "module",
 	"dependencies": {
 		"@atproto/oauth-client-browser": "^0.2.1",
+		"@sveltejs/adapter-node": "^5.2.3",
 		"svelte-loading-spinners": "^0.3.6"
 	}
 }

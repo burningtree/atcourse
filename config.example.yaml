@@ -1,0 +1,10 @@
+instances:
+
+  - did: did:plc:xxxxxxx
+    publicUrl: https://myinstance.com
+    account:
+      pds: https://mypds.com
+      password: XXXXXX
+    cookieSecret: XXXXX
+    jwksPrivateKeys:
+      - {"kty": "...", ...}

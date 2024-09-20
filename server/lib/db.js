@@ -3,11 +3,14 @@ import { loadMockData } from "./mock.js";
 
 const { MikroORM, RequestContext } = await import(`@mikro-orm/sqlite`);
 
-export async function initDatabase(api, conf) {
+export async function initDatabase(did) {
+    if (!did) {
+        throw new Error('initDatabase: no DID')
+    }
     const orm = await MikroORM.init({
-        dbName: "./atpbb.sqlite",
+        dbName: `./data/${did}.sqlite`,
         entities: ["./entities"],
-        debug: api.env === "development",
+        debug: process.env.NODE_ENV === "development",
         logger: (msg) => console.log(msg) //api.logger.trace(msg),
     });
 
@@ -20,7 +23,6 @@ export async function initDatabase(api, conf) {
         getContext() {
             const em = orm.em.fork();
             return {
-                api,
                 em,
                 topic: em.getRepository("Topic"),
                 reply: em.getRepository("Reply"),

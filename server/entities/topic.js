@@ -1,10 +1,11 @@
 import { EntitySchema, wrap } from "@mikro-orm/core";
 import { createId } from "@paralleldrive/cuid2";
+import slugify from "slugify";
 
 export class Topic {
 
     url() {
-        return process.env.INSTANCE_URL + '/t/' + this.id
+        return '/t/' + this.id + '-' + slugify(this.title, { strict: true, lower: true })
     }
 
     recordUri() {
@@ -28,7 +29,7 @@ export class Topic {
         // extend
         json.url = this.url()
         json.recordUri = this.recordUri()
-        const author = await ctx.api.agent.getProfile({ actor: t.authorDid })
+        const author = await ctx.instance.agent.getProfile({ actor: t.authorDid })
         if (author) {
             json.author = author.data
         }

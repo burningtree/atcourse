@@ -1,8 +1,11 @@
 <script>
     import "../app.css";
-    import Composer from "$lib/components/Composer.svelte";
     import { MagnifyingGlass, Bars3, User, Plus } from "svelte-heros-v2";
     import { setContext } from "svelte";
+
+    import Composer from "$lib/components/Composer.svelte";
+    import UserAvatar from "$lib/components/UserAvatar.svelte";
+
     const { data } = $props();
     const session = $derived(data.session);
     const instance = $derived(data.instance);
@@ -22,6 +25,10 @@
     setContext("instance", instance);
     setContext("session", session);
 </script>
+
+<svelte:head>
+    <title>{instance.name}</title>
+</svelte:head>
 
 {#if composer.config}
     <Composer {composer} />
@@ -57,12 +64,7 @@
                 /></button
             >
             {#if session}
-                <div class="shrink-0 w-8 h-8">
-                    <img
-                        src={data.session.profile.avatar}
-                        class="aspect-square rounded-full"
-                    />
-                </div>
+                <UserAvatar actor={data.session.profile} size="w-8 h-8" />
             {/if}
         </div>
     </div>
@@ -75,9 +77,9 @@
         <div class="mt-10 text-sm">
             Powered by <a
                 href="https://github.com/burningtree/atpbb"
-                class="underline hover:no-underline">atpbb</a
+                class="underline hover:no-underline">@atcourse.app</a
             >
-            -
+            (v{instance.version}) -
             <a href="/about" class="underline hover:no-underline"
                 >About this forum</a
             >

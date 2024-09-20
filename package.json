@@ -1,12 +1,13 @@
 {
-  "name": "atpbb",
-  "version": "1.0.0",
+  "name": "atcourse",
+  "version": "0.1.0",
   "author": "",
   "license": "MIT",
   "private": true,
   "main": "index.js",
   "scripts": {
-    "dev": "NODE_ENV=development pnpm --recursive --parallel --stream dev"
+    "dev": "NODE_ENV=development pnpm --recursive --parallel --stream dev",
+    "prod": "NODE_ENV=production pnpm --recursive --parallel --stream prod"
   },
   "packageManager": "pnpm@8.15.9",
   "workspaces": {

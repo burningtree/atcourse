@@ -3,7 +3,7 @@ import { EntitySchema, wrap } from "@mikro-orm/core";
 export class Reply {
 
     url() {
-        return process.env.INSTANCE_URL + '/t/' + this.topicId + '#' + this.id
+        return '/t/' + this.topicId + '#' + this.id
     }
 
     recordUri() {
@@ -26,7 +26,7 @@ export class Reply {
         json.recordUri = this.recordUri()
 
         // authors
-        const author = await ctx.api.agent.getProfile({ actor: r.authorDid })
+        const author = await ctx.instance.agent.getProfile({ actor: r.authorDid })
         if (author) {
             json.author = author.data
         }

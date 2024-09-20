@@ -2,18 +2,18 @@ import { NodeOAuthClient } from '@atproto/oauth-client-node'
 import { JoseKey } from '@atproto/jwk-jose'
 //import { SessionStore, StateStore } from './storage'
 
-export const createClient = async (db) => {
+export const createOAuthClient = async (instance) => {
 
-    const publicUrl = process.env.INSTANCE_URL
+    const publicUrl = instance.publicUrl
     const url = publicUrl || `http://127.0.0.1:${env.PORT}`
 
-    const em = db.em.fork()
+    const em = instance.db.em.fork()
     const AuthSession = em.getRepository('AuthSession')
     const AuthState = em.getRepository('AuthState')
 
     return new NodeOAuthClient({
         clientMetadata: {
-            client_name: 'atpbb',
+            client_name: `atcourse instance [${instance.did}]`,
             client_id: publicUrl
                 ? `${url}/oauth/client-metadata.json`
                 : `http://localhost?redirect_uri=${encodeURIComponent(`${url}/oauth/callback`)}`,
@@ -33,11 +33,7 @@ export const createClient = async (db) => {
             tos_uri: `${url}/terms`,
             policy_uri: `${url}/policy`,*/
         },
-        keyset: await Promise.all([
-            JoseKey.fromImportable(process.env.PRIVATE_KEY_1),
-            JoseKey.fromImportable(process.env.PRIVATE_KEY_2),
-            JoseKey.fromImportable(process.env.PRIVATE_KEY_3),
-        ]),
+        keyset: await Promise.all(instance.jwksPrivateKeys.map(k => JoseKey.fromImportable(k))),
         stateStore: {
             async set(key, state) {
                 const item = em.create("AuthState", { key, state })
