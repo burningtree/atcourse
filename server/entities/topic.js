@@ -3,6 +3,14 @@ import { createId } from "@paralleldrive/cuid2";
 
 export class Topic {
 
+    url() {
+        return process.env.INSTANCE_URL + '/t/' + this.id
+    }
+
+    recordUri() {
+        return `at://${this.authorDid}/app.atpbb.forum.topic/${this.rkey}`
+    }
+
     async view(ctx, opts = {}) {
         const t = wrap(this).toJSON();
         const json = {
@@ -10,6 +18,7 @@ export class Topic {
             title: t.title,
             categoryId: t.categoryId,
             authorDid: t.authorDid,
+            rkey: t.rkey,
             tags: t.tags,
             viewCount: t.viewCount,
             repliesCount: t.repliesCount,
@@ -17,6 +26,8 @@ export class Topic {
             createdAt: t.createdAt,
         }
         // extend
+        json.url = this.url()
+        json.recordUri = this.recordUri()
         const author = await ctx.api.agent.getProfile({ actor: t.authorDid })
         if (author) {
             json.author = author.data
@@ -46,10 +57,15 @@ export const schema = new EntitySchema({
             type: "string"
         },
         categoryId: {
-            type: "string"
+            type: "string",
+            nullable: true,
         },
         authorDid: {
             type: "string"
+        },
+        rkey: {
+            type: "string",
+            nullable: true
         },
         tags: {
             type: "array",

@@ -4,8 +4,7 @@ import { load } from "js-yaml";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
-export async function loadMockData(api) {
-    const db = api.db;
+export async function loadMockData(db) {
 
     const map = [
         ["topics.yaml", "Topic"],

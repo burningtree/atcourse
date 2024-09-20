@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .baseTable th {
-    @apply font-normal text-left px-2 py-2.5 text-gray-500;
+    @apply font-normal text-left px-2 py-2.5 text-gray-500 text-sm;
 }
 
 .baseTable th.center {
@@ -31,5 +31,17 @@ input.input {
 }
 
 button.button {
-    @apply border p-2 py-1.5 bg-blue-500 text-white;
+    @apply bg-blue-500 text-white px-2 py-1 flex gap-1 items-center
+}
+
+button.button:disabled {
+    @apply bg-gray-500;
+}
+
+button.button.transparent {
+    @apply bg-transparent text-gray-500;
+}
+
+button.button.transparent:hover {
+    @apply bg-gray-200;
 }

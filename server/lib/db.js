@@ -1,4 +1,5 @@
 import { wrap } from "@mikro-orm/core";
+import { loadMockData } from "./mock.js";
 
 const { MikroORM, RequestContext } = await import(`@mikro-orm/sqlite`);
 
@@ -10,7 +11,8 @@ export async function initDatabase(api, conf) {
         logger: (msg) => console.log(msg) //api.logger.trace(msg),
     });
 
-    await orm.schema.refreshDatabase();
+    //await orm.schema.refreshDatabase();
+    //await loadMockData({ orm, em: orm.em });
 
     return {
         orm,

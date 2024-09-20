@@ -1,0 +1,17 @@
+{
+    "client_id": "https://forum.atscan.net/client-metadata.json",
+    "client_name": "atpbb",
+    "client_uri": "https://forum.atscan.net",
+    "redirect_uris": [
+        "https://forum.atscan.net"
+    ],
+    "grant_types": [
+        "authorization_code"
+    ],
+    "response_types": [
+        "code"
+    ],
+    "token_endpoint_auth_method": "none",
+    "application_type": "web",
+    "dpop_bound_access_tokens": true
+}

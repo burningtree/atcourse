@@ -1,48 +1,17 @@
 <!--h1 class="text-3xl font-bold underline">Hello world!</h1-->
 <script>
-    import { categories } from "$lib/config.json";
     import Menu from "$lib/components/Menu.svelte";
+    import TopicInfoLine from "$lib/components/TopicInfoLine.svelte";
+    import { timeDifference, timeFormat } from "$lib/utils.js";
+    import { getContext } from "svelte";
 
+    const instance = getContext("instance");
     const { data } = $props();
     const topics = $derived(data.topics || []);
     const pageId = $state("latest");
-
-    /*const topics = [
-        {
-            id: "xxxyyy1",
-            title: "Decentralized Anti-MEV sequencer based on Order-Fairness Byzantine Fault-Tolerant (BFT) consensus",
-            authors: [
-                {
-                    img: "https://cdn.bsky.app/img/avatar/plain/did:plc:524tuhdhh3m7li5gycdn6boe/bafkreicv3nbfw5bqg3uxm6nid4fghif3cp6ne4fu635bvxc4otusovd5vm@jpeg",
-                },
-                {
-                    img: "https://cdn.bsky.app/img/avatar_thumbnail/plain/did:plc:oio4hkxaop4ao4wz2pp3f4cr/bafkreibsqivteivghabvdrwxfhrzbl4iqao24eneha53a4mu3g4k57f7py@jpeg",
-                },
-            ],
-            repliesCount: 2,
-            viewsCount: 50,
-            lastActivity: "9h",
-            categoryId: "layer2",
-            tags: ["mev", "rollup"],
-        },
-        {
-            id: "xxxyyy2",
-            title: "Decentralized and Verifiable Cloud Service on Ethereum",
-            authors: [
-                {
-                    img: "https://cdn.bsky.app/img/avatar/plain/did:plc:524tuhdhh3m7li5gycdn6boe/bafkreicv3nbfw5bqg3uxm6nid4fghif3cp6ne4fu635bvxc4otusovd5vm@jpeg",
-                },
-            ],
-            repliesCount: 0,
-            viewsCount: 31,
-            lastActivity: "5d",
-            categoryId: "sharding",
-            tags: ["data-availability", "p2p", "scaling"],
-        },
-    ];*/
 </script>
 
-<Menu {pageId} />
+<Menu {pageId} session={data.session} />
 
 {#if data}
     <table class="w-full table baseTable">
@@ -51,13 +20,13 @@
                 <th>Topic</th>
                 <th></th>
                 <th class="center">Replies</th>
-                <th class="center">Views</th>
-                <th>Activity</th>
+                <th class="center hidden md:table-cell">Views</th>
+                <th class="center">Activity</th>
             </tr>
         </thead>
         <tbody>
             {#each data.topics.map((t) => {
-                t.category = categories.find((c) => c.id === t.categoryId);
+                t.category = instance.categories.find((c) => c.id === t.categoryId);
                 return t;
             }) as topic}
                 <tr>
@@ -65,28 +34,7 @@
                         <div class="text-lg">
                             <a href="/t/{topic.id}">{topic.title}</a>
                         </div>
-                        <div class="flex gap-2 text-sm text-gray-500">
-                            <div class="">
-                                <a href="/c/{topic.categoryId}"
-                                    ><span
-                                        class="w-2.5 h-2.5 inline-block"
-                                        style="background-color: {topic.category
-                                            .color}"
-                                    ></span>
-                                    {topic.category.title}</a
-                                >
-                            </div>
-                            <div class="flex gap-2">
-                                {#each topic.tags as tag}
-                                    <div>
-                                        <span
-                                            class="w-2.5 h-2.5 inline-block bg-gray-300"
-                                        ></span>
-                                        {tag}
-                                    </div>
-                                {/each}
-                            </div>
-                        </div>
+                        <TopicInfoLine {topic} />
                     </td>
                     <td>
                         <div class="flex gap-1">
@@ -113,11 +61,14 @@
                     <td class="font-semibold text-gray-500 text-center">
                         {topic.repliesCount}
                     </td>
-                    <td class="text-gray-500 text-center">
+                    <td class="text-gray-500 text-center hidden md:table-cell">
                         {topic.viewCount}
                     </td>
-                    <td class="text-gray-500 text-center">
-                        {topic.lastActivity}
+                    <td
+                        class="text-gray-500 text-center"
+                        title={timeFormat(topic.lastActivity)}
+                    >
+                        {timeDifference(topic.lastActivity)}
                     </td>
                 </tr>
             {/each}
