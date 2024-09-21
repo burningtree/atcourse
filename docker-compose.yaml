@@ -1,0 +1,8 @@
+services:
+  atcourse:
+    image: ghcr.io/burningtree/atcourse
+    ports:
+      - 8844:80
+    volumes:
+      - ./config.yaml:/app/config.yaml
+      - ./data:/app/data

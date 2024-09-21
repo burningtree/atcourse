@@ -11,20 +11,32 @@ export class InstanceManager {
 
     async init(instancesConfig) {
         await Promise.all(instancesConfig.map(async instance => {
+            console.log(`Initializing instance: ${instance.did} [${instance.publicUrl}]`)
+
+            instance.host = new URL(instance.publicUrl).hostname
+
+            // initialize atp agent
             instance.agent = new AtpAgent({ service: instance.account.pds })
             await instance.agent.login({
                 identifier: instance.did,
                 password: instance.account.password,
             })
-            instance.host = new URL(instance.publicUrl).hostname
-            // save to instances array
-            this.instances[instance.did] = instance
+            console.log(`[instance=${instance.did}] agent initialized`)
+
             // load additional info about instance from pds
-            instance.configRecord = await this.getConfigRecord(instance.did)
+            instance.configRecord = await this.getConfigRecord(instance)
+            console.log(`[instance=${instance.did}] atp record retrived`)
+
             // initialize database
             instance.db = await initDatabase(instance.did)
+            console.log(`[instance=${instance.did}] database initialized`)
+
             // initialize oauth client
             instance.oauthClient = await createOAuthClient(instance)
+            console.log(`[instance=${instance.did}] oauth client initialized`)
+
+            // save to instances array
+            this.instances[instance.did] = instance
 
             // done
             console.log(`* Instance "${instance.configRecord.name}": ${instance.publicUrl} [${instance.did}] initialized`)
@@ -37,6 +49,10 @@ export class InstanceManager {
     }
 
     getInstanceFromRequest(request) {
+        if (request.headers.host.match(/^localhost:/)) {
+            return this.instances[Object.keys(this.instances)[0]]
+        }
+
         for (const instanceId in this.instances) {
             if (this.instances[instanceId].host === request.headers.host) {
                 return this.instances[instanceId]
@@ -45,8 +61,8 @@ export class InstanceManager {
         throw new Error('No instance found')
     }
 
-    async getConfigRecord(did) {
-        const instance = this.getInstance(did)
+    async getConfigRecord(didOrInstance) {
+        const instance = typeof didOrInstance === "object" ? didOrInstance : this.getInstance(didOrInstance)
         let resp;
         try {
             resp = await instance.agent.com.atproto.repo.getRecord({
@@ -59,6 +75,12 @@ export class InstanceManager {
             return resp.data.value
         }
         return {}
+    }
+
+    async close() {
+        return Promise.all(Object.keys(this.instances).map(id => {
+            return this.instances[id].db.orm.close()
+        }))
     }
 }
 

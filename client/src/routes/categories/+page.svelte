@@ -3,7 +3,9 @@
     import Menu from "$lib/components/Menu.svelte";
     import { getContext } from "svelte";
 
-    const { categories } = getContext("instance");
+    const {
+        record: { categories },
+    } = getContext("instance");
 </script>
 
 <Menu pageId="categories" />

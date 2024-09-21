@@ -33,7 +33,9 @@
             // its topic
             resp = await apiCallPost({ fetch }, "createTopic", message);
         }
-        if (resp) {
+        if (resp.error) {
+            alert(resp.error);
+        } else {
             goto(resp.url, { invalidateAll: true });
             //window.location.replace(resp.url);
         }

@@ -1,6 +1,7 @@
 import 'dotenv/config'
 
-import HyperExpress from "hyper-express"
+import express from "express"
+import bodyParser from 'body-parser'
 import { getIronSession } from 'iron-session';
 import { TID } from '@atproto/common'
 
@@ -10,15 +11,27 @@ import { responder } from './lib/request.js';
 
 import pkg from '../package.json' assert { type: "json" };
 
+import { handler as clientHandler } from '../client/build/handler.js';
+
 // load config file
 const config = loadYaml('../config.yaml');
 
+console.log('Starting atcourse server ...')
+
 // initialize instances
 const instances = new InstanceManager()
-await instances.init(config.instances)
+try {
+    await instances.init(config.instances)
+} catch (e) {
+    console.error(e)
+    throw e
+}
 const instanceResponder = (...args) => responder(instances, ...args)
 
-const server = new HyperExpress.Server();
+//const server = new HyperExpress.Server();
+const server = express();
+server.use(bodyParser.json())
+
 
 server.get('/api/1/listTopics', await instanceResponder(async ({ ctx }) => {
     const topics = await ctx.topic.find({}, { orderBy: { createdAt: 'desc' } })
@@ -83,6 +96,13 @@ server.post('/api/1/createTopic', await instanceResponder(async ({ ctx, data }) 
     }
 
     const { title, text } = data;
+    if (!title) {
+        throw new Error('Title is required')
+    }
+    if (!text) {
+        throw new Error('Text is required')
+    }
+
     const createdAt = new Date().toISOString()
 
     /*await ctx.agent.com.atproto.repo.deleteRecord({
@@ -250,21 +270,36 @@ server.get('/oauth/callback', async (req, res) => {
 
 server.get('/oauth/client-metadata.json', async (request, response) => {
     const instance = instances.getInstanceFromRequest(request)
-    console.log(instance)
     response.setHeader("Content-Type", "application/json")
-    response.send(JSON.stringify(instance.oauthClient.clientMetadata))
+    response.end(JSON.stringify(instance.oauthClient.clientMetadata))
 })
 
 server.get('/oauth/jwks.json', async (request, response) => {
     const instance = instances.getInstanceFromRequest(request)
     response.setHeader("Content-Type", "application/json")
-    response.send(JSON.stringify(instance.oauthClient.jwks))
+    response.end(JSON.stringify(instance.oauthClient.jwks))
 })
 
-const port = config.listen?.port || 6855
-await server.listen(port)
-console.log(`Webserver started on port ${port}`)
+server.get('/api/1/status', async (request, response) => {
+    response.end('ok')
+})
+
+const masterServer = express()
+masterServer.use(server)
+
+if (process.env.NODE_ENV === "production") {
+    // add client data
+    masterServer.use(clientHandler)
+    console.log("@atcourse/client server enabled")
+}
+
+console.log('starting webserver ..')
+const port = config.listen?.port || process.env.ATCOURSE_PORT || 6855
+await masterServer.listen(port)
+
+console.log(`Server started on port ${port}`)
 
 process.on('SIGTERM', () => {
-    api.db.orm.close()
+    console.log('Shutting down ..')
+    instances.close()
 });

@@ -6,6 +6,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
+    "build": "pnpm --recursive --parallel --stream build",
     "dev": "NODE_ENV=development pnpm --recursive --parallel --stream dev",
     "prod": "NODE_ENV=production pnpm --recursive --parallel --stream prod"
   },

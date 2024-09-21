@@ -24,19 +24,20 @@ export async function responder(instances, callback) {
             if (ctx.oauthSession) {
                 ctx.agent = new Agent(ctx.oauthSession)
             }
-            //console.log(oauthSession)
         }
-
-        const data = await request.json()
-        const resp = await callback({ request, ctx, params: request.query_parameters || {}, data })
+        const data = typeof request.json === "function" ? await request.json() : (request.json || request.body)
+        let resp;
+        try {
+            resp = await callback({ request, ctx, params: request.query_parameters || request.query || {}, data })
+        } catch (e) {
+            resp = {
+                error: e.message
+            }
+        }
 
         response.setHeader('vary', 'Origin')
         response.setHeader("Content-Type", "application/json");
 
-        /*response.setHeader('Access-Control-Allow-Origin', '*')
-        response.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization')
-        response.setHeader('Access-Control-Allow-Methods', 'OPTIONS, POST, GET, PUT, DELETE')
-        response.setHeader('Access-Control-Allow-Credentials', "true")*/
-        response.send(JSON.stringify(resp))
+        response.end(JSON.stringify(resp))
     }
 }

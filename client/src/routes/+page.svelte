@@ -14,7 +14,7 @@
 </script>
 
 <svelte:head>
-    <title>{instance.record.name}</title>
+    <title>{instance.name}</title>
 </svelte:head>
 
 <Menu {pageId} session={data.session} />
