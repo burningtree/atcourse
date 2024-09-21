@@ -11,19 +11,12 @@ importers:
       '@atproto/oauth-client-browser':
         specifier: ^0.2.1
         version: 0.2.1
-      '@sveltejs/adapter-node':
-        specifier: ^5.2.3
-        version: 5.2.3(@sveltejs/kit@2.5.28(@sveltejs/vite-plugin-svelte@4.0.0-next.7(svelte@5.0.0-next.250)(vite@5.4.6))(svelte@5.0.0-next.250)(vite@5.4.6))
-      marked:
-        specifier: ^14.1.2
-        version: 14.1.2
-      svelte-loading-spinners:
-        specifier: ^0.3.6
-        version: 0.3.6
-    devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^3.0.0
         version: 3.2.5(@sveltejs/kit@2.5.28(@sveltejs/vite-plugin-svelte@4.0.0-next.7(svelte@5.0.0-next.250)(vite@5.4.6))(svelte@5.0.0-next.250)(vite@5.4.6))
+      '@sveltejs/adapter-node':
+        specifier: ^5.2.3
+        version: 5.2.3(@sveltejs/kit@2.5.28(@sveltejs/vite-plugin-svelte@4.0.0-next.7(svelte@5.0.0-next.250)(vite@5.4.6))(svelte@5.0.0-next.250)(vite@5.4.6))
       '@sveltejs/kit':
         specifier: ^2.0.0
         version: 2.5.28(@sveltejs/vite-plugin-svelte@4.0.0-next.7(svelte@5.0.0-next.250)(vite@5.4.6))(svelte@5.0.0-next.250)(vite@5.4.6)
@@ -36,6 +29,9 @@ importers:
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.47)
+      marked:
+        specifier: ^14.1.2
+        version: 14.1.2
       postcss:
         specifier: ^8.4.47
         version: 8.4.47
@@ -48,6 +44,9 @@ importers:
       svelte-heros-v2:
         specifier: 2.0.0-next.8
         version: 2.0.0-next.8(svelte@5.0.0-next.250)
+      svelte-loading-spinners:
+        specifier: ^0.3.6
+        version: 0.3.6
       tailwindcss:
         specifier: ^3.4.12
         version: 3.4.12

@@ -7,7 +7,7 @@ RUN apk add --no-cache gcompat
 WORKDIR /app
 COPY ./ ./
 
-RUN pnpm install --production --frozen-lockfile > /dev/null
+RUN pnpm install --recursive --production --frozen-lockfile
 
 RUN pnpm build
 
