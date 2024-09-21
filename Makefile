@@ -4,6 +4,10 @@ SHELL = /bin/bash
 
 DOCKER_IMAGE_TAG = ghcr.io/burningtree/atcourse
 
+.PHONY: install
+install: ## Print info about all commands
+	pnpm install --recursive
+
 .PHONY: help
 help: ## Print info about all commands
 	@echo "Helper commands:"

@@ -1,6 +1,8 @@
 services:
   atcourse:
     image: ghcr.io/burningtree/atcourse
+    restart: always
+    container_name: atcourse
     ports:
       - 8844:80
     volumes:
