@@ -1,6 +1,5 @@
 <script>
     import { ArrowRight, Plus } from "svelte-heros-v2";
-    import { composerConfig } from "$lib/stores.js";
     import { getContext } from "svelte";
 
     const { pageId, session } = $props();
@@ -14,7 +13,7 @@
 
     function openComposer() {
         composer.config = { enabled: true };
-        console.log(composer.config);
+        console.log($state.snapshot(composer.config));
     }
 </script>
 

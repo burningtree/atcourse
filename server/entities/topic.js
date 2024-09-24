@@ -29,10 +29,6 @@ export class Topic {
         // extend
         json.url = this.url()
         json.recordUri = this.recordUri()
-        const author = await ctx.instance.agent.getProfile({ actor: t.authorDid })
-        if (author) {
-            json.author = author.data
-        }
 
         if (opts.text) {
             json.text = t.text

@@ -1,15 +1,19 @@
 <!--h1 class="text-3xl font-bold underline">Hello world!</h1-->
 <script>
     import { timeDifference, timeFormat } from "$lib/utils.js";
-    import { getContext } from "svelte";
+    import { getContext, onMount } from "svelte";
+
+    import { apiCall } from "$lib/api.js";
 
     import Menu from "$lib/components/Menu.svelte";
     import TopicInfoLine from "$lib/components/TopicInfoLine.svelte";
     import UserAvatar from "$lib/components/UserAvatar.svelte";
 
     const instance = getContext("instance");
+    const profileStore = getContext("profileStore");
     const { data } = $props();
     const topics = $derived(data.topics || []);
+
     const pageId = $state("latest");
 </script>
 
@@ -40,15 +44,15 @@
                         <div class="text-lg">
                             <a href={topic.url}>{topic.title}</a>
                             <span class="text-gray-400 text-sm"
-                                >#{topic.id.toString(16)}</span
+                                >#{topic.id}</span
                             >
                         </div>
                         <TopicInfoLine {topic} />
                     </td>
                     <td>
                         <div class="flex gap-1">
-                            {#if topic.author}
-                                <UserAvatar actor={topic.author} />
+                            {#if topic.authorDid}
+                                <UserAvatar actor={topic.authorDid} />
                             {/if}
                             {#if topic.authors}
                                 {#each topic.authors as author}

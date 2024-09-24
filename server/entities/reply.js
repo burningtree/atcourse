@@ -26,10 +26,10 @@ export class Reply {
         json.recordUri = this.recordUri()
 
         // authors
-        const author = await ctx.instance.agent.getProfile({ actor: r.authorDid })
+        /*const author = await ctx.instance.agent.getProfile({ actor: r.authorDid })
         if (author) {
             json.author = author.data
-        }
+        }*/
         return json
     }
 }

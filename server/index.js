@@ -32,6 +32,14 @@ const instanceResponder = (...args) => responder(instances, ...args)
 const server = express();
 server.use(bodyParser.json())
 
+server.get('/api/1/getProfile', await instanceResponder(async ({ ctx, params }) => {
+    const { actor } = params
+    if (!actor) {
+        throw new Error('Need actor param')
+    }
+    const resp = await ctx.instance.agent.getProfile({ actor })
+    return resp?.data
+}))
 
 server.get('/api/1/listTopics', await instanceResponder(async ({ ctx }) => {
     const topics = await ctx.topic.find({}, { orderBy: { createdAt: 'desc' } })
@@ -89,6 +97,73 @@ server.post('/api/1/createReply', await instanceResponder(async ({ ctx, data }) 
     return reply.view(ctx)
 }))
 
+server.post('/api/1/updateReply', await instanceResponder(async ({ ctx, data }) => {
+    if (!ctx.oauthSession) {
+        throw new Error('Not logged in')
+    }
+    const { text, id } = data;
+    if (!text) {
+        throw new Error('Text is required')
+    }
+    if (!id) {
+        throw new Error('No reply id')
+    }
+    const reply = await ctx.reply.findOne({ id })
+    if (!reply) {
+        throw new Error('Reply not found')
+    }
+    const rec = await ctx.agent.com.atproto.repo.putRecord({
+        repo: ctx.agent.assertDid,
+        collection: 'app.atpbb.forum.reply',
+        rkey: reply.rkey,
+        record: {
+            instance: ctx.instance.did,
+            text,
+            createdA: reply.createdAt,
+        }
+    })
+    reply.text = text
+
+    await ctx.em.persist(reply).flush()
+    return reply.view(ctx)
+}))
+
+server.post('/api/1/updateTopic', await instanceResponder(async ({ ctx, data }) => {
+    if (!ctx.oauthSession) {
+        throw new Error('Not logged in')
+    }
+    const { title, text, id } = data;
+    if (!title) {
+        throw new Error('Title is required')
+    }
+    if (!text) {
+        throw new Error('Text is required')
+    }
+    if (!id) {
+        throw new Error('No topic id')
+    }
+    const topic = await ctx.topic.findOne({ id })
+    if (!topic) {
+        throw new Error('Topic not found')
+    }
+    const rec = await ctx.agent.com.atproto.repo.putRecord({
+        repo: ctx.agent.assertDid,
+        collection: 'app.atpbb.forum.topic',
+        rkey: topic.rkey,
+        record: {
+            instance: ctx.instance.did,
+            title,
+            text,
+            createdA: topic.createdAt,
+        }
+    })
+    topic.title = title
+    topic.text = text
+
+    await ctx.em.persist(topic).flush()
+    return topic.view(ctx)
+}))
+
 server.post('/api/1/createTopic', await instanceResponder(async ({ ctx, data }) => {
 
     if (!ctx.oauthSession) {
@@ -104,12 +179,6 @@ server.post('/api/1/createTopic', await instanceResponder(async ({ ctx, data }) 
     }
 
     const createdAt = new Date().toISOString()
-
-    /*await ctx.agent.com.atproto.repo.deleteRecord({
-        repo: ctx.agent.assertDid,
-        collection: 'app.atpbb.forum.topic',
-        rkey: 'self',
-    })*/
 
     const rkey = TID.nextStr()
     const rec = await ctx.agent.com.atproto.repo.putRecord({
@@ -161,11 +230,13 @@ server.post('/api/1/deleteReply', await instanceResponder(async ({ ctx, data }) 
     }
 
     // remove from repo
-    await ctx.agent.com.atproto.repo.deleteRecord({
-        repo: ctx.agent.assertDid,
-        collection: 'app.atpbb.forum.reply',
-        rkey: reply.rkey,
-    })
+    if (reply.rkey) {
+        await ctx.agent.com.atproto.repo.deleteRecord({
+            repo: ctx.agent.assertDid,
+            collection: 'app.atpbb.forum.reply',
+            rkey: reply.rkey,
+        })
+    }
 
     // remove from db
     await ctx.em.remove(reply).flush()
@@ -187,7 +258,7 @@ server.post('/api/1/deleteTopic', await instanceResponder(async ({ ctx, data }) 
         throw new Error('No topic id')
     }
 
-    const topic = await ctx.topic.findOne({ id: reply.topicId })
+    const topic = await ctx.topic.findOne({ id })
     if (!topic) {
         throw new Error('Topic not found')
     }
@@ -196,11 +267,13 @@ server.post('/api/1/deleteTopic', await instanceResponder(async ({ ctx, data }) 
     }
 
     // remove from repo
-    await ctx.agent.com.atproto.repo.deleteRecord({
-        repo: ctx.agent.assertDid,
-        collection: 'app.atpbb.forum.topic',
-        rkey: topic.rkey,
-    })
+    if (topic.rkey) {
+        await ctx.agent.com.atproto.repo.deleteRecord({
+            repo: ctx.agent.assertDid,
+            collection: 'app.atpbb.forum.topic',
+            rkey: topic.rkey,
+        })
+    }
 
     // remove from db
     await ctx.em.remove(topic).flush()
@@ -236,8 +309,8 @@ server.get('/api/1/session', await instanceResponder(async ({ ctx }) => {
     if (!ctx.oauthSession) {
         return { error: 'not logged in' }
     }
-    const profileResult = await ctx.agent.getProfile({ actor: ctx.agent.assertDid })
-    return { did: ctx.clientSession.did, profile: profileResult.data }
+    //const profileResult = await ctx.agent.getProfile({ actor: ctx.agent.assertDid })
+    return { did: ctx.clientSession.did }
 }))
 
 server.post('/api/1/login', await instanceResponder(async ({ ctx, params, data }) => {
